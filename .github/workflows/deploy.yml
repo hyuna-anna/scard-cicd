@@ -47,12 +47,12 @@ jobs:
           print(res.json())
           EOF
 
-          - name: Databricks CLI 설치
-            run: |
-              curl -fsSL https://raw.githubusercontent.com/databricks/setup-cli/main/install.sh | sh
+      - name: Databricks CLI 설치
+        run: |
+          curl -fsSL https://raw.githubusercontent.com/databricks/setup-cli/main/install.sh | sh
 
-          - name: DAB 배포
-            env:
-              DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
-              DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
-            run: databricks bundle deploy --target prod
+      - name: DAB 배포
+        env:
+          DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+        run: databricks bundle deploy --target prod
