@@ -1,1 +1,24 @@
+name: Deploy to Prod
 
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Databricks CLI 설치
+        run: pip install databricks-cli
+
+      - name: Prod Git folder 동기화
+        env:
+          DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+        run: |
+          databricks repos update \
+            --path /Workspace/Users/hyunahsung@mz.co.kr/scard-cicd-prod \
+            --branch main
