@@ -11,19 +11,38 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Databricks CLI 설치
-        run: pip install databricks-cli
-
       - name: Prod Git folder 동기화
         env:
           DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
           DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
         run: |
-        curl -X PATCH \
-          "$DATABRICKS_HOST/api/2.0/repos" \
-          -H "Authorization: Bearer $DATABRICKS_TOKEN" \
-          -H "Content-Type: application/json" \
-          -d '{
-            "path": "/Workspace/Users/hyunahsung@mz.co.kr/scard-cicd-prod",
-            "branch": "main"
-          }'
+          python3 << 'EOF'
+          import requests, os
+
+          host = os.environ['DATABRICKS_HOST']
+          token = os.environ['DATABRICKS_TOKEN']
+          headers = {'Authorization': f'Bearer {token}'}
+
+          # prod git folder ID 조회
+          res = requests.get(
+              f"{host}/api/2.0/repos",
+              headers=headers,
+              params={"path_prefix": "/Workspace/Users/hyunahsung@mz.co.kr/scard-cicd-prod"}
+          )
+          repos = res.json().get('repos', [])
+          if not repos:
+              print("repo를 찾을 수 없습니다.")
+              exit(1)
+
+          repo_id = repos[0]['id']
+          print(f"Repo ID: {repo_id}")
+
+          # branch 최신화
+          res = requests.patch(
+              f"{host}/api/2.0/repos/{repo_id}",
+              headers=headers,
+              json={"branch": "main"}
+          )
+          print(f"Status: {res.status_code}")
+          print(res.json())
+          EOF
