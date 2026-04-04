@@ -19,6 +19,11 @@ jobs:
           DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
           DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
         run: |
-          databricks repos update \
-            --path /Workspace/Users/hyunahsung@mz.co.kr/scard-cicd-prod \
-            --branch main
+        curl -X PATCH \
+          "$DATABRICKS_HOST/api/2.0/repos" \
+          -H "Authorization: Bearer $DATABRICKS_TOKEN" \
+          -H "Content-Type: application/json" \
+          -d '{
+            "path": "/Workspace/Users/hyunahsung@mz.co.kr/scard-cicd-prod",
+            "branch": "main"
+          }'
