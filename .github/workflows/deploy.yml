@@ -13,8 +13,8 @@ jobs:
 
       - name: Prod Git folder 동기화
         env:
-          DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
-          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+          DATABRICKS_HOST: ${{ secrets.PROD_DATABRICKS_HOST }}
+          DATABRICKS_TOKEN: ${{ secrets.PROD_DATABRICKS_TOKEN }}
         run: |
           python3 << 'EOF'
           import requests, os
@@ -27,7 +27,7 @@ jobs:
           res = requests.get(
               f"{host}/api/2.0/repos",
               headers=headers,
-              params={"path_prefix": "/Workspace/Users/hyunahsung@mz.co.kr/scard-cicd-prod"}
+              params={"path_prefix": "/Workspace/Users/hyunahsung@mz.co.kr/scard-cicd-prd"}
           )
           repos = res.json().get('repos', [])
           if not repos:
@@ -53,6 +53,6 @@ jobs:
 
       - name: DAB 배포
         env:
-          DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
-          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+          DATABRICKS_HOST: ${{ secrets.PROD_DATABRICKS_HOST }}
+          DATABRICKS_TOKEN: ${{ secrets.PROD_DATABRICKS_TOKEN }}
         run: databricks bundle deploy --target prod
