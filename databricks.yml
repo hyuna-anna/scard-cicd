@@ -4,7 +4,7 @@ bundle:
 targets:
   prod:
     workspace:
-      host: https://megazone-adc-prd-workspace.cloud.databricks.com/
+      host: https://dbc-be7629ec-8148.cloud.databricks.com/
 
 resources:
   jobs:
