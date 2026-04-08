@@ -2,9 +2,31 @@ bundle:
   name: scard-cicd
 
 targets:
+  dev:
+    workspace:
+      host: https://megazone-adc-prd-workspace.cloud.databricks.com/
+    resources:
+      jobs:
+        etl_job:
+          tasks:
+            - task_key: test_task
+              new_cluster:
+                spark_version: "13.3.x-scala2.12"
+                node_type_id: "i3.xlarge"
+                num_workers: 1
+
   prod:
     workspace:
       host: https://dbc-be7629ec-8148.cloud.databricks.com/
+    resources:
+      jobs:
+        etl_job:
+          tasks:
+            - task_key: test_task
+              new_cluster:
+                spark_version: "13.3.x-scala2.12"
+                node_type_id: "i3.2xlarge"
+                num_workers: 4
 
 resources:
   jobs:
